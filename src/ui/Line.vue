@@ -14,6 +14,7 @@ onMounted(async () => {
     const head = headRef.value
     // 丑陋的妥协
     head.textContent = ((props.role === 'user') && outerStatus) ? '>  ' + props.sentense[0] : props.sentense[0]
+    // 丑陋的妥协x2，破坏了完整性。应该使用伪元素， 待我做完其他优化再来改它
     head.nextElementSibling.textContent = props.sentense[1] ? " " + props.sentense[1] : " "
 
     if (props.role === 'user') {
