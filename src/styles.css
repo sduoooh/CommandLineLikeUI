@@ -1,0 +1,11 @@
+.system-warning {
+    color: red;
+}
+
+.user-call {
+    color: yellow;
+}
+
+.system-call {
+    color: green;
+}

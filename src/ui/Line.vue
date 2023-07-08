@@ -19,17 +19,17 @@ onMounted(async () => {
 
     if (props.role === 'user') {
         if (props.sentense[0] && isCall(props.sentense[0])[0]) {
-            head.classList.add('yellow')
+            head.classList.add('user-call')
         }
     } else if (props.role === 'system') {
         if (props.sentense[0] === 'Warning: ') {
-            head.classList.add('red')
+            head.classList.add('system-warning')
         } else {
-            head.classList.add('green')
+            head.classList.add('system-call')
         }
     } else {
         if (props.sentense[0] === 'openai: ') {
-            head.classList.add('green')
+            head.classList.add('system-call')
         }
     }
 })
@@ -43,18 +43,6 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.red {
-    color: red;
-}
-
-.yellow {
-    color: yellow;
-}
-
-.green {
-    color: green;
-}
-
 p {
     margin: 25px;
     font-family: "Consolas";
