@@ -9,6 +9,11 @@ const history = ref([
     { role: "system", content: "你的交流必须是使用中文的。你是一个可靠的助手。" },
 ])
 
+/**
+ * 
+ * @param {string} text 
+ * @returns {[role : string, content : string]} history style response
+ */
 async function chat(text) {
     history.value.push({ role: 'user', content: text })
     const response = await openai.value.createChatCompletion({
@@ -21,6 +26,12 @@ async function chat(text) {
     return ["openai: ", response.data.choices[0].message.content]
 }
 
+
+/**
+ * 
+ * @param {string[]} arr 
+ * @returns {[role : string, content : string]} history style response
+ */
 export const ai = async (arr) => {
     if (!outerConversationStatus.value.outerConversationContinue) {
         if (!apiKey.value) {
@@ -37,7 +48,7 @@ export const ai = async (arr) => {
         }
     } else {
         if (arr.length === 0) {
-            return ["Help: ", "You can type 'openai' without nothing to get this tips, or with some sentense to chat with openai. Whatever your mode in the conversation with this part, you always can with command : 'restart', 'exit' to restart or exit the conversation."]
+            return ["Help: ", "You can type 'openai' without nothing to get this tips, or with some sentense to chat with openai. Whatever your mode in the conversation with this part, you can always with one of these commands : 'restart', 'exit' to restart or exit the conversation."]
         } else if (arr[0] === 'restart') {
             history.value = [{ "role": "system", "content": "你的交流必须是使用中文的。你是一个可靠的助手。" },]
             return ["openai: ", "Restarted."]

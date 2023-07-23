@@ -1,11 +1,28 @@
 import { systemCall } from "../call/SystemCall.js"
 
+/**
+ *   @class Conversation
+ *  @description Data class for conversation
+ * @property {Array} conversationHistory - Array of conversation history
+ * @property {Date} lastedUpdate - Lasted update date
+ * @method {Array} getConversationHistoryAll - Get all conversation history
+ * @method {Array} getConversationHistoryByRole - Get conversation history by role
+ * @method {Array} addConversationHistory - Add conversation history
+ * @method {Array} runSystemConversation - Run system conversation
+ * @method {Array} clearConversationHistory - Clear conversation history
+ * @example
+ * const conversation = new Conversation()
+ * conversation.getConversationHistoryAll()
+ * conversation.getConversationHistoryByRole('user')
+ * conversation.addConversationHistory('user', 'Hello')
+ * conversation.runSystemConversation('Hello')
+ * conversation.clearConversationHistory()
+ *  @returns {Object} Conversation
+ * 
+*/
 class Conversation {
 
-    //
-    // a sample:
-    //       [{ role: 'system', text: ['Hello', 'how can I help you?'], date : new Date() }, }].
-    //
+    
     #conversationHistory = []
     lastedUpdate = new Date()
 

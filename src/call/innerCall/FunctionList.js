@@ -13,7 +13,7 @@ const help = function (attrs) {
         return ['todo: ', 'This function will show you the todo plans of this dotme hostname’s main site.']
     }
     else {
-        return ['Warning: ', 'The function \'' + attrs[0] + '\' is not defined.']
+        return ['Warning: ', 'The function \'' + attrs[0] + '\' is not defined or is outer calling.']
     }
 }
 
@@ -31,7 +31,7 @@ const show = function (attrs) {
     }else if (attrs[0] === 'DotMeTodo') {
         return ['DotMeTodo: ', 'This is my dotme hostname `s todo list. Address: http://sduoooh.me/DotMeTodo .']
     }else {
-        return ['Warning: ', 'The site \'' + attrs[0] + '\' is not defined.']
+        return ['Warning: ', 'The site \'' + attrs[0] + '\' is not defined or is outer calling.']
     }
 }
 

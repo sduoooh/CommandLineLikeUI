@@ -38,7 +38,7 @@ onMounted(async () => {
 
 <template>
     <p>
-        <span ref="headRef"></span><span></span>
+        <span ref="headRef"></span><span class="respoense"></span>
     </p>
 </template>
 
@@ -46,5 +46,9 @@ onMounted(async () => {
 p {
     margin: 25px;
     font-family: "Consolas";
+}
+
+.respoense {
+    white-space: pre-wrap;
 }
 </style>
