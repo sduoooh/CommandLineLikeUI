@@ -1,11 +1,11 @@
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import axios from 'axios'
 import { outerConversationStatus } from '../OuterConversation'
 
 const collectionsList = ref([])
 const pagelimit = ref(10)
 const nowpage = ref(1)
-const response = ref(["colletions: \n", `Here are yours orders (pageLimit : ${pagelimit.value} , nowPage :  ${nowpage.value} ): \n\n`])
+const response = computed(() => {return["colletions: \n", `Here are yours orders (pageLimit : ${pagelimit.value} , nowPage :  ${nowpage.value} ): \n\n`]})
 
 
 export async function collections(arr) {
@@ -22,7 +22,7 @@ export async function collections(arr) {
                     }
                 }
             }
-        )
+            )
         return a
     }
     else {
@@ -35,11 +35,11 @@ export async function collections(arr) {
             outerConversationStatus.value.outerConversationContinue = false
             response.value = ["colletions: \n", '']
             return ["colletions: ", "Exited."]
-        } else if (arr[0] === 'open' && !isNaN(arr[1]*1) && arr[1]*1 <= collectionsList.value.length && arr[1]*1 > 0) {
-            window.open(`https://collection.sduoooh.me/${collectionsList.value[arr[1]*1 - 1].file_name}`)
-            return ["colletions: ", `We will open the No.${arr[1]*1} collection for you.`]
-        } else if (arr[0] === 'pagelimit' && !isNaN(arr[1]*1) && arr[1]*1 > 0) {
-            return ["colletions: ", "We will set the page limit to " + arr[1]*1 + "."]
+        } else if (arr[0] === 'open' && !isNaN(arr[1] * 1) && arr[1] * 1 <= collectionsList.value.length && arr[1] * 1 > 0) {
+            window.open(`https://collection.sduoooh.me/${collectionsList.value[arr[1] * 1 - 1].file_name}`)
+            return ["colletions: ", `We will open the No.${arr[1] * 1} collection for you.`]
+        } else if (arr[0] === 'pagelimit' && !isNaN(arr[1] * 1) && arr[1] * 1 > 0) {
+            return ["colletions: ", "We will set the page limit to " + arr[1] * 1 + "."]
         } else if (arr[0] === 'next') {
             if (nowpage.value < Math.ceil(collectionsList.value.length / pagelimit.value)) {
                 nowpage.value += 1
@@ -50,6 +50,8 @@ export async function collections(arr) {
                     }
                 }
                 return a
+            }else {
+                return ["colletions: ", "Warning: You are already in the last page."]
             }
         } else if (arr[0] === 'last') {
             if (nowpage.value > 1) {
@@ -62,8 +64,12 @@ export async function collections(arr) {
                 }
                 return a
             }
+            else {
+                return ["colletions: ", "Warning: You are already in the first page."]
+            }
         }
         else {
+            console.log(arr[1])
             return ["colletions: ", "Warning: The command '" + arr[0] + "' is not defined or has bad used."]
         }
     }

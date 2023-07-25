@@ -1,8 +1,5 @@
 import { ref } from 'vue'
 
-import { ai } from './aiRes/openai'
-import { collections } from './collections/Collections.js'
-
 
 const outerPartsList = ['openai', 'collections',] // 后续将动态获取该部分
 
@@ -16,10 +13,10 @@ export const outerTester = (text) => {
 }
 
 export const outerOperater = (text) => {
-    switch (text[0]) {
+    switch (text) {
         case 'openai':
-            return ai(text.slice(1, text.length))
+            return 'OpenAI'
         case 'collections':
-            return collections(text.slice(1, text.length))
+            return 'Collections'
     }
 }

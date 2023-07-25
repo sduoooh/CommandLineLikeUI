@@ -1,4 +1,3 @@
-import { systemCall } from "../call/SystemCall.js"
 
 /**
  *   @class Conversation
@@ -39,22 +38,21 @@ class Conversation {
         return this.#conversationHistory.filter((item) => item.role === role)
     }
 
+    /**
+     * 
+     * @param {string} role 
+     * @param {string} text 
+     * @returns 
+     */
     addConversationHistory(role, text) {
         console.log(role, text)
         this.#conversationHistory.push({ role: role, text: text, date: new Date() })
         this.lastedUpdate = new Date()
-        return this.#conversationHistory
-    }
-
-    async runSystemConversation(text) {
-        const response = await systemCall(text)
-        return this.addConversationHistory(response.valueOf()[0],response.valueOf().slice(1, response.valueOf().length)) 
     }
 
     clearConversationHistory() {
         this.#conversationHistory = []
         this.lastedUpdate = new Date()
-        return this.#conversationHistory
     }
 
 }

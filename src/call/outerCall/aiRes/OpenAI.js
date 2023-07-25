@@ -23,7 +23,7 @@ async function chat(text) {
     console.log(response)
     history.value.push(response.data.choices[0].message)
     console.log(response.data.choices[0].message.content)
-    return ["openai: ", response.data.choices[0].message.content]
+    return ["openai: ", response.data.choices[0].message.content, 'outer-openai']
 }
 
 
@@ -34,29 +34,44 @@ async function chat(text) {
  */
 export const ai = async (arr) => {
     if (!outerConversationStatus.value.outerConversationContinue) {
+        outerConversationStatus.value.outerConversationContinue = true
+        if (arr[0] === 'openai' && !/sk-[0-9a-zA-Z]{48}/gm.test(arr[1])) {
+
+            return ["Warning: ", "Pls input your api key first.", 'system-warning']
+        } else {
+            apiKey.value = arr[1]
+            configuration.value = new Configuration({ apiKey: apiKey.value })
+            openai.value = new OpenAIApi(configuration.value)
+            outerConversationStatus.value.outerConversationContinue = true
+            outerConversationStatus.value.outerConversationPart = 'openai'
+            return ["openai: ", "Your api key has been set.", 'outer-openai']
+        }
+    } else {
+        if (arr[0] === 'openai'){
+            switch (arr[1]) {
+                case '': 
+                    return ["Help: ", "You can type 'openai' without nothing to get this tips, or with some sentense to chat with openai. Whatever your mode in the conversation with this part, you can always with one of these commands : 'restart', 'exit' to restart or exit the conversation.", 'outer-openai']
+                case 'restart':
+                    history.value = [{ "role": "system", "content": "你的交流必须是使用中文的。你是一个可靠的助手。" },]
+                    return ["openai: ", "Restarted.", 'outer-openai']
+                case 'exit':
+                    outerConversationStatus.value.outerConversationContinue = false
+                    history.value = [{ "role": "system", "content": "你的交流必须是使用中文的。你是一个可靠的助手。" },]
+                    apiKey.value = null
+                    return ["openai: ", "Exited.", 'outer-openai']
+                }
+        }
         if (!apiKey.value) {
-            if (arr.length !== 1) {
-                return ["Warning: ", "Pls input your api key first."]
-            } else {
+            if (/sk-[0-9a-zA-Z]{48}/gm.test(arr[0])) {
                 apiKey.value = arr[0]
                 configuration.value = new Configuration({ apiKey: apiKey.value })
                 openai.value = new OpenAIApi(configuration.value)
                 outerConversationStatus.value.outerConversationContinue = true
                 outerConversationStatus.value.outerConversationPart = 'openai'
-                return ["openai: ", "Your api key has been set."]
+                return ["openai: ", "Your api key has been set.", 'outer-openai']
+            } else {
+                return ["Warning: ", "Pls input a correct api key.", 'system-warning']
             }
-        }
-    } else {
-        if (arr.length === 0) {
-            return ["Help: ", "You can type 'openai' without nothing to get this tips, or with some sentense to chat with openai. Whatever your mode in the conversation with this part, you can always with one of these commands : 'restart', 'exit' to restart or exit the conversation."]
-        } else if (arr[0] === 'restart') {
-            history.value = [{ "role": "system", "content": "你的交流必须是使用中文的。你是一个可靠的助手。" },]
-            return ["openai: ", "Restarted."]
-        } else if (arr[0] === 'exit') {
-            outerConversationStatus.value.outerConversationContinue = false
-            history.value = [{ "role": "system", "content": "你的交流必须是使用中文的。你是一个可靠的助手。" },]
-            apiKey.value = null
-            return ["openai: ", "Exited."]
         } else {
             return chat(arr[0])
         }

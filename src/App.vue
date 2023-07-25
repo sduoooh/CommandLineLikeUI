@@ -1,10 +1,9 @@
 <script setup>
-import { ref } from 'vue'
-import Line from './ui/Line.vue'
-import Conversation from './data/ConversationData.js'
+import { ref, watch } from 'vue'
+import Line from './defaultUI/Line.vue'
 import { Timer } from './tools/Timer.js'
+import { isLoading } from './data/ShareData.js'
 
-const conversation = new Conversation()
 const words = ref([])
 const timer = new Timer()
 const editable = ref(true)
@@ -16,20 +15,14 @@ const input = async function () {
   } else {
     timer.start(console.log, ['timer start'], 1000)
   }
-  working()
+  isLoading.value = true
   const userInput = document.getElementById('userInput').textContent
   document.getElementById('userInput').textContent = ''
-  let te = conversation.addConversationHistory(
-    'user', 
-    /^\s*$/gm.test(userInput) ? 
-          ['', ''] : 
-          [userInput.match(/(\S+)/gm)[0], userInput.match(/(\S+)/gm).slice(1).join(' ')]
-  )
-  console.log(te)
-  words.value = te
-  let temp = await conversation.runSystemConversation(userInput)
-  words.value = temp
-  noWorking()
+  words.value.push({
+    text: /^\s*$/gm.test(userInput) ?
+      ['', ''] :
+      [userInput.match(/(\S+)/gm)[0], userInput.match(/(\S+)/gm).slice(1).join(' ')]
+  })
 }
 
 const focusin = function () {
@@ -61,14 +54,23 @@ const noWorking = () => {
     document.getElementById('userInput').focus()
   }, 1);
 }
+
+watch(isLoading, (newVal) => {
+  if (newVal) {
+    working()
+  } else {
+    noWorking()
+  }
+})
+
 </script>
 
 
 <template>
-  <Line v-memo v-for="i in words" :sentense="i.text" :role="i.role"/>
+  <Line v-memo="[]" v-for="i in words" :sentense="i.text" />
   <div class="lines waitting-cursor no-working-arr">
-    <p v-if="editable" id="userInput" autofocus="true" @focus="focusin" @blur="focusout"  contenteditable="true" class="delete-cursor"
-      @keyup.enter.native="input"></p>
+    <p v-if="editable" id="userInput" autofocus="true" @focus="focusin" @blur="focusout" contenteditable="true"
+      class="delete-cursor" @keyup.enter.native="input"></p>
     <p v-else class="delete-cursor"></p>
   </div>
 </template>
