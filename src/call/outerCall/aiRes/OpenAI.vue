@@ -7,6 +7,7 @@ const props = defineProps(['sentense'])
 
 const res = ref(['', '', 'system-call'])
 
+console.log('props.sentense:', props.sentense)
 ai(props.sentense).then((response) => {
     console.log('response:', response)
     res.value = response

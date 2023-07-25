@@ -35,6 +35,7 @@ async function chat(text) {
 export const ai = async (arr) => {
     if (!outerConversationStatus.value.outerConversationContinue) {
         outerConversationStatus.value.outerConversationContinue = true
+        outerConversationStatus.value.outerConversationPart = 'openai'
         if (arr[0] === 'openai' && !/sk-[0-9a-zA-Z]{48}/gm.test(arr[1])) {
 
             return ["Warning: ", "Pls input your api key first.", 'system-warning']

@@ -9,32 +9,25 @@ import { systemCall } from '../call/SystemCall.js'
 import OpenAI from '../call/outerCall/aiRes/OpenAI.vue'
 import Collections from '../call/outerCall/collections/Collections.vue'
 
-
 const props = defineProps(['sentense'])
 const is = ref(null)
 const type = ref([])
 const style = ref('')
 
-const outer = ref(false)
-
 const userHead = ref(null)
 const resHead = ref(null)
 
 const outerStatus = ref(outerConversationStatus.value.outerConversationContinue)
-const conversation = new Conversation()
-
-const outerPart = computed(() => {
-    return outerOperater(type.value[1])
-})
+const conversation = new Conversation();
+[is.value, type.value, style.value] = isCall(props.sentense[0])
+const outerPart = outerOperater(type.value[1])
 
 onMounted(async () => {
     await nextTick();
 
-    [is.value, type.value, style.value] = isCall(props.sentense[0])
-
     const head = userHead.value
 
-    head.textContent = (outerStatus) ? '>  ' + props.sentense[0] : props.sentense[0]
+    head.textContent = (outerStatus.value) ? '>  ' + props.sentense[0] : props.sentense[0]
     head.nextElementSibling.textContent = props.sentense[1] ? " " + props.sentense[1] : " "
     style.value ? head.classList.add(style.value) : null
     await nextTick();
@@ -81,7 +74,7 @@ onMounted(async () => {
         <span class="tips"><span class="tips-font">{{ "Powered by Outer-Module " }} <b style="color: black;">{{ type[1]
         }}</b></span></span>
     <p style="margin-left: 0;">
-        <component :is="Collections" :sentense="props.sentense"></component>
+        <component :is="outerPart" :sentense="props.sentense"></component>
     </p>
     </p>
 </template>
