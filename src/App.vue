@@ -3,10 +3,13 @@ import { ref, watch } from 'vue'
 import Line from './defaultUI/Line.vue'
 import { Timer } from './tools/Timer.js'
 import { isLoading } from './data/ShareData.js'
+import { outerConversationStatus } from './call/outerCall/OuterConversation'
 
 const words = ref([])
 const timer = new Timer()
 const editable = ref(true)
+const nowInputIndex = ref(0)
+const tempInput = ref('')
 
 const input = async function () {
   if (timer.getStatus()) {
@@ -21,8 +24,10 @@ const input = async function () {
   words.value.push({
     text: /^\s*$/gm.test(userInput) ?
       ['', ''] :
-      [userInput.match(/(\S+)/gm)[0], userInput.match(/(\S+)/gm).slice(1).join(' ')]
+      [userInput.match(/(\S+)/gm)[0], userInput.match(/(\S+)/gm).slice(1).join(' ')],
+    part: outerConversationStatus.value.outerConversationPart ? outerConversationStatus.value.outerConversationPart : 'system'
   })
+  nowInputIndex.value = words.value.length
 }
 
 const focusin = function () {
@@ -55,6 +60,61 @@ const noWorking = () => {
   }, 1);
 }
 
+const initArr = () => {
+  document.execCommand("selectAll", false, null)
+  document.getSelection().collapseToEnd()
+}
+
+const moduleMemoryIsolation = (func) => {
+  if (outerConversationStatus.value.outerConversationContinue && words.value[nowInputIndex.value].part != outerConversationStatus.value.outerConversationPart) {
+    func()
+    return
+  }else if (!outerConversationStatus.value.outerConversationContinue && words.value[nowInputIndex.value].part != 'system') {
+    func()
+    return
+  }
+  document.getElementById('userInput').textContent = words.value[nowInputIndex.value].text[0] + (words.value[nowInputIndex.value].text[1] === '' ? '' : ' ' + words.value[nowInputIndex.value].text[1])
+  initArr()
+}
+
+const next = () => {
+  if (words.value.length === 0) {
+    return
+  }
+  if (nowInputIndex.value === words.value.length - 1) {
+    document.getElementById('userInput').textContent = tempInput.value
+    nowInputIndex.value = words.value.length
+    initArr()
+    return
+  }
+  if (nowInputIndex.value === words.value.length) {
+    tempInput.value = document.getElementById('userInput').textContent
+    nowInputIndex.value = 0
+    moduleMemoryIsolation(next)
+    return
+  }
+  nowInputIndex.value += 1
+  moduleMemoryIsolation(next)
+}
+
+const prev = () => {
+  if (words.value.length === 0) {
+    return
+  }
+  if (nowInputIndex.value === 0) {
+    document.getElementById('userInput').textContent = tempInput.value
+    initArr()
+    nowInputIndex.value = words.value.length
+    return
+  }
+  if (nowInputIndex.value === words.value.length) {
+    tempInput.value = document.getElementById('userInput').textContent
+  }
+  nowInputIndex.value -= 1
+  moduleMemoryIsolation(prev)
+}
+
+
 watch(isLoading, (newVal) => {
   if (newVal) {
     working()
@@ -68,9 +128,10 @@ watch(isLoading, (newVal) => {
 
 <template>
   <Line v-memo="[]" v-for="i in words" :sentense="i.text" />
-  <div class="lines waitting-cursor no-working-arr">
+  <div id="div" class="lines waitting-cursor no-working-arr">
     <p v-if="editable" id="userInput" autofocus="true" @focus="focusin" @blur="focusout" contenteditable="true"
-      class="delete-cursor" @keyup.enter.native="input"></p>
+      class="delete-cursor" @keyup.enter.native="input" @keydown.left.prevent @keydown.right.prevent
+      @mousedown.prevent="(event) => event.target.focus()" @keydown.up.prevent='prev' @keydown.down.prevent='next'></p>
     <p v-else class="delete-cursor"></p>
   </div>
 </template>

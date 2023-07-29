@@ -5,6 +5,7 @@ import { Configuration, OpenAIApi } from "openai"
 const configuration = ref()
 const openai = ref()
 const apiKey = ref()
+export const model = ref("gpt-3.5-turbo-0613")
 const history = ref([
     { role: "system", content: "你的交流必须是使用中文的。你是一个可靠的助手。" },
 ])
@@ -17,11 +18,10 @@ const history = ref([
 async function chat(text) {
     history.value.push({ role: 'user', content: text })
     const response = await openai.value.createChatCompletion({
-        model: "gpt-3.5-turbo-0613",
+        model: model.value,
         messages: history.value,
     })
-    console.log(response)
-    history.value.push(response.data.choices[0].message)
+    history.value.push({ role: 'AI', content: response.data.choices[0].message })
     console.log(response.data.choices[0].message.content)
     return ["openai: ", response.data.choices[0].message.content, 'outer-openai']
 }
@@ -49,7 +49,9 @@ export const ai = async (arr) => {
         }
     } else {
         if (arr[0] === 'openai'){
-            switch (arr[1]) {
+            const temp = arr[1].match(/(\S+)/gm) || [""]
+            console.log(temp)
+            switch (temp[0]) {
                 case '': 
                     return ["Help: ", "You can type 'openai' without nothing to get this tips, or with some sentense to chat with openai. Whatever your mode in the conversation with this part, you can always with one of these commands : 'restart', 'exit' to restart or exit the conversation.", 'outer-openai']
                 case 'restart':
@@ -60,6 +62,17 @@ export const ai = async (arr) => {
                     history.value = [{ "role": "system", "content": "你的交流必须是使用中文的。你是一个可靠的助手。" },]
                     apiKey.value = null
                     return ["openai: ", "Exited.", 'outer-openai']
+                case "setmodel":
+                    if (temp[1] === 'gpt-3.5-turbo-0613') {
+                        model.value = temp[1]
+                        return ["openai: ", "The model has been set to " + model.value, 'outer-openai']
+                    } 
+                    else if(temp[1] === 'gpt-4-0613'){
+                        return ["Warning: ", "GPT-4 is unsupported now.", 'system-warning']
+                    }
+                    else {
+                        return ["Warning: ", "Pls input a correct model.", 'system-warning']
+                    }
                 }
         }
         if (!apiKey.value) {
