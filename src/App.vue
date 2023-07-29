@@ -127,7 +127,6 @@ watch(isLoading, (newVal) => {
 
 
 <template>
-  <div>{{ words }}</div>
   <Line v-memo="[]" v-for="i in words" :sentense="i.text" />
   <div id="div" class="lines waitting-cursor no-working-arr">
     <p v-if="editable" id="userInput" autofocus="true" @focus="focusin" @blur="focusout" contenteditable="true"

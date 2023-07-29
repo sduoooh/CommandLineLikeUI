@@ -45,7 +45,6 @@ class Conversation {
      * @returns 
      */
     addConversationHistory(role, text) {
-        console.log(role, text)
         this.#conversationHistory.push({ role: role, text: text, date: new Date() })
         this.lastedUpdate = new Date()
     }

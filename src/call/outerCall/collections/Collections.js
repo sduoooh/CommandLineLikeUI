@@ -69,7 +69,6 @@ export async function collections(arr) {
             }
         }
         else {
-            console.log(arr[1])
             return ["colletions: ", "Warning: The command '" + arr[0] + "' is not defined or has bad used."]
         }
     }

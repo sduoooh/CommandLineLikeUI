@@ -34,14 +34,12 @@ onMounted(async () => {
 
     if (!outerStatus.value) {
         if (!is.value) {
-            console.log('resHead:', resHead.value)
             resHead.value.textContent = 'Warning: '
             resHead.value.classList.add('system-warning')
             resHead.value.nextElementSibling.textContent = 'Pls input a correct command. You can type "help" to get help. You have typed: "' + props.sentense[0] + '".'
             isLoading.value = false
         } else if (type.value[0] === 'system') {
             const response = await systemCall(props.sentense)
-            console.log('response:', response.valueOf())
             resHead.value.classList.add(response.valueOf()[2])
 
             resHead.value.textContent = response.valueOf()[0]

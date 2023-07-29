@@ -9,9 +9,7 @@ const res = ref(['', '', 'system-call'])
 const tips = ref(false)
 const information = ref(false)
 
-console.log('props.sentense:', props.sentense)
 ai(props.sentense).then((response) => {
-    console.log('response:', response)
     res.value = response
     isLoading.value = false
 })

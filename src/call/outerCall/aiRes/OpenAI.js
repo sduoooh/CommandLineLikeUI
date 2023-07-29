@@ -22,7 +22,6 @@ async function chat(text) {
         messages: history.value,
     })
     history.value.push({ role: 'AI', content: response.data.choices[0].message })
-    console.log(response.data.choices[0].message.content)
     return ["openai: ", response.data.choices[0].message.content, 'outer-openai']
 }
 
@@ -50,7 +49,6 @@ export const ai = async (arr) => {
     } else {
         if (arr[0] === 'openai'){
             const temp = arr[1].match(/(\S+)/gm) || [""]
-            console.log(temp)
             switch (temp[0]) {
                 case '': 
                     return ["Help: ", "You can type 'openai' without nothing to get this tips, or with some sentense to chat with openai. Whatever your mode in the conversation with this part, you can always with one of these commands : 'restart', 'exit' to restart or exit the conversation.", 'outer-openai']

@@ -21,7 +21,6 @@ const last = () => {
 
 if (props.sentense[0] !== 'next' && props.sentense[0] !== 'last') {
     collections(props.sentense).then((response) => {
-        console.log('response:', props.sentense)
         res.value = response
     })
     isLoading.value = false
