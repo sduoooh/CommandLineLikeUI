@@ -25,7 +25,7 @@ const input = async function () {
     text: /^\s*$/gm.test(userInput) ?
       ['', ''] :
       [userInput.match(/(\S+)/gm)[0], userInput.match(/(\S+)/gm).slice(1).join(' ')],
-    part: outerConversationStatus.value.outerConversationPart ? outerConversationStatus.value.outerConversationPart : 'system'
+    part: outerConversationStatus.value.outerConversationContinue ? outerConversationStatus.value.outerConversationPart : 'system'
   })
   nowInputIndex.value = words.value.length
 }
@@ -127,6 +127,7 @@ watch(isLoading, (newVal) => {
 
 
 <template>
+  <div>{{ words }}</div>
   <Line v-memo="[]" v-for="i in words" :sentense="i.text" />
   <div id="div" class="lines waitting-cursor no-working-arr">
     <p v-if="editable" id="userInput" autofocus="true" @focus="focusin" @blur="focusout" contenteditable="true"
