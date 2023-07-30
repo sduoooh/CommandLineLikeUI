@@ -120,7 +120,7 @@ const prev = () => {
 
 const change = () => {
   const text =document.getElementById('userInput').textContent
-  text === '' ?  1 : highlight.value = isCall(text.match(/(\S+)/gm)[0])
+  text === '' ?  highlight.value[0] = false : highlight.value = isCall(text.match(/(\S+)/gm)[0])
 }
 
 const focus = () => {

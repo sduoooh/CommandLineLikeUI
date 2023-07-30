@@ -1,4 +1,4 @@
-const functionList = ["help", 'show', 'todo', ]
+const functionList = ["help", 'show', 'todo', 'system-information', ]
 
 const help = function (attrs) {
     if (attrs.length !== 1) {
@@ -12,6 +12,8 @@ const help = function (attrs) {
         return ['show: ', 'This function will show you the child sites of this dotme hostname.', 'system-call']
     }else if (attrs[0] === 'todo') {
         return ['todo: ', 'This function will show you the todo plans of this dotme hostname’s main site.', 'system-call']
+    }else if (attrs[0] === 'system-information') {
+        return ['system-information: ', 'This function will show you the system information of this dotme hostname’s main site.', 'system-call']
     }
     else {
         return ['Warning: ', 'The function \'' + attrs[0] + '\' is not defined or is outer calling.', 'system-warning']
@@ -31,7 +33,10 @@ const show = function (attrs) {
         return ['upload: ', 'This is a website for uploading files. Address: http://upload.sduoooh.me .',   'system-call']
     }else if (attrs[0] === 'DotMeTodo') {
         return ['DotMeTodo: ', 'This is my dotme hostname `s todo list. Address: http://www.sduoooh.me/DotMeTodo .', 'system-call']
-    }else {
+    }else if (attrs[0] === 'system-information') {
+        return ['system-information: ', 'This function will show you the system information of this dotme hostname’s main site.', 'system-call']
+    }
+    else {
         return ['Warning: ', 'The site \'' + attrs[0] + '\' is not defined or is outer calling.', 'system-warning']
     }
 }
@@ -44,6 +49,14 @@ const todo = function (attrs) {
     }
 }
 
+const systemInformation = function (attrs) {
+    if (attrs[0] === '') {
+        return ['System Information: ', 'via 0.0.1 , updated in 2023/07/30 17:** , add this system-information func and, fix the realtime detecting\' bug. ', 'system-call']
+    }else{
+        return ['Warning: ', 'The function \'system-information\' only takes 0 arguments.', 'system-warning']
+    }
+}
+
 const crossing = function(arr){
     switch (arr[0]) {
         case 'help':
@@ -52,6 +65,8 @@ const crossing = function(arr){
             return show(arr.slice(1, arr.length)) 
         case 'todo':
             return todo(arr.slice(1, arr.length))
+        case 'system-information':
+            return systemInformation(arr.slice(1, arr.length))
     }
 }
 
