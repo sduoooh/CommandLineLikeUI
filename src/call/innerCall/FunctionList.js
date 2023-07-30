@@ -38,7 +38,7 @@ const show = function (attrs) {
 
 const todo = function (attrs) {
     if (attrs[0] === '') {
-        return ['Todo: ', 'realtime input header detecting; \n\nmodelize supporting.', 'system-call']
+        return ['Todo: ', 'modelize supporting.', 'system-call']
     }else{
         return ['Warning: ', 'The function \'todo\' only takes 0 or 1 arguments.', 'system-warning']
     }

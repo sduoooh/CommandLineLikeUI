@@ -1,24 +1,28 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed, onMounted } from 'vue'
 import Line from './defaultUI/Line.vue'
 import { Timer } from './tools/Timer.js'
 import { isLoading } from './data/ShareData.js'
 import { outerConversationStatus } from './call/outerCall/OuterConversation'
+import { isCall } from './tools/IsCall'
 
 const words = ref([])
 const timer = new Timer()
 const editable = ref(true)
 const nowInputIndex = ref(0)
-const tempInput = ref('')
+const tempInput = ref('') 
+const highlight = ref([false, ['',''], ''])
 
 const input = async function () {
   if (timer.getStatus()) {
     console.log('timer is running')
+    document.getElementById('userInput').textContent = ''
     return
   } else {
     timer.start(console.log, ['timer start'], 1000)
   }
   isLoading.value = true
+  highlight.value = [false, ['',''], '']
   const userInput = document.getElementById('userInput').textContent
   document.getElementById('userInput').textContent = ''
   words.value.push({
@@ -114,6 +118,16 @@ const prev = () => {
   moduleMemoryIsolation(prev)
 }
 
+const change = () => {
+  const text =document.getElementById('userInput').textContent
+  text === '' ?  1 : highlight.value = isCall(text.match(/(\S+)/gm)[0])
+}
+
+const focus = () => {
+  document.getElementById('userInput').focus()
+  initArr()
+}
+
 
 watch(isLoading, (newVal) => {
   if (newVal) {
@@ -128,35 +142,43 @@ watch(isLoading, (newVal) => {
 
 <template>
   <Line v-memo="[]" v-for="i in words" :sentense="i.text" />
-  <div id="div" class="lines waitting-cursor no-working-arr">
-    <p v-if="editable" id="userInput" autofocus="true" @focus="focusin" @blur="focusout" contenteditable="true"
-      class="delete-cursor" @keyup.enter.native="input" @keydown.left.prevent @keydown.right.prevent
-      @mousedown.prevent="(event) => event.target.focus()" @keydown.up.prevent='prev' @keydown.down.prevent='next'></p>
+  <div id="div" class="lines waitting-cursor no-working-arr arr ">
+    <div v-if="editable">
+      <span v-if="highlight[0]" :class="highlight[2]" style="position: absolute;caret-color: transparent;" @click="focus">{{ highlight[1][1] }}</span>
+      <p id="userInput" autofocus="true" @focus="focusin" @blur="focusout" contenteditable="true"
+      @keyup="change" @keydown="change"
+      class="delete-cursor" @keyup.enter.native.prevent="input" @keydown.left.prevent @keydown.right.prevent
+      @mousedown.prevent="focus" @keydown.up.prevent='prev' @keydown.down.prevent='next'></p></div>
     <p v-else class="delete-cursor"></p>
   </div>
 </template>
 
 <style scoped>
-.inputting-cursor {
+.inputting-cursor p {
   --cursor-content: "|";
   --time: 0.8s;
 }
 
-.waitting-cursor {
+.waitting-cursor p {
   --cursor-content: "_";
   --time: 0.8s;
 }
 
-.working-cursor {
+.working-cursor p{
   --cursor-content: "... ...";
   --time: 0.8s;
 }
 
-.working-arr {
+.working-arr p{
   --arr-content: "";
 }
 
-.no-working-arr {
+.no-working-arr p {
+  --arr-content: ">>> ";
+  --time: 0.8s;
+}
+
+.arr span {
   --arr-content: ">>> ";
   --time: 0.8s;
 }

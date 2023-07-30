@@ -16,12 +16,7 @@ export const isCall = (head) => {
     let type = []
     let style = ''
 
-    if (/^\s*$/gm.test(head)){
-        is = true
-        type = ['system', 'empty']
-        style = ''
-    }
-    else if (tester(head)) {
+    if (tester(head)) {
         is = true
         type = ['system', head]
         style = 'system-call'
