@@ -1,10 +1,11 @@
-const functionList = ["help", 'show', 'todo', 'system-information', ]
+import { isTest } from "../../data/ShareData"
+const functionList = ["help", 'show', 'todo', 'system-information', 'test', ]
 
 const help = function (attrs) {
     if (attrs.length !== 1) {
         return ['Warning: ', 'The function \'help\' only takes 0 or 1 arguments.', 'system-warning']
     }else if (attrs[0] === ''){
-        return ['help-tips: ', 'This function will show something about the system call what you input with the "help".', 'system-call']
+        return ['help-tips: ', 'This function will show something about the system call what you input with the "help". You can type with these attrs: ' + functionList + '.', 'system-call']
     }
     else if (attrs[0] === 'help') {
         return ['help: ', 'This function will show you the functions you can use.', 'system-call']
@@ -14,6 +15,8 @@ const help = function (attrs) {
         return ['todo: ', 'This function will show you the todo plans of this dotme hostname’s main site.', 'system-call']
     }else if (attrs[0] === 'system-information') {
         return ['system-information: ', 'This function will show you the system information of this dotme hostname’s main site.', 'system-call']
+    }else if (attrs[0] === 'test') {
+        return ['test: ', 'This function will control the test model.', 'system-call']
     }
     else {
         return ['Warning: ', 'The function \'' + attrs[0] + '\' is not defined or is outer calling.', 'system-warning']
@@ -51,9 +54,25 @@ const todo = function (attrs) {
 
 const systemInformation = function (attrs) {
     if (attrs[0] === '') {
-        return ['System Information: ', 'via 0.0.1 , updated in 2023/07/30 17:** , add this system-information func and, fix the realtime detecting\' bug. ', 'system-call']
+        return ['System Information: ', 'via 0.0.2 , updated in 2023/08/01 19:** , renice the realtime detecting and, renice the Input component struct to support easy registering function. ', 'system-call']
     }else{
         return ['Warning: ', 'The function \'system-information\' only takes 0 arguments.', 'system-warning']
+    }
+}
+
+const test = function (attrs) {
+    if (attrs[0] === '') {
+        return ['Test: ', 'With the attrs \'on\' or \'off\' to control the test mode, with \'show\' to get the realtime test-model status.', 'system-call']
+    }else if (attrs[0] === 'on') {
+        isTest.value = true
+        return ['Test: ', 'The test mode is on.', 'system-call']
+    }else if (attrs[0] === 'off') {
+        isTest.value = false
+        return ['Test: ', 'The test mode is off.', 'system-call']
+    }else if (attrs[0] === 'show') {
+        return ['Test: ', 'The test mode is ' + isTest.value + '.', 'system-call']
+    }else{
+        return ['Warning: ', 'The function \'test\' only takes 0 or 1 arguments, and pls input the attrs correctly.', 'system-warning']
     }
 }
 
@@ -67,6 +86,8 @@ const crossing = function(arr){
             return todo(arr.slice(1, arr.length))
         case 'system-information':
             return systemInformation(arr.slice(1, arr.length))
+        case 'test':
+            return test(arr.slice(1, arr.length))
     }
 }
 
